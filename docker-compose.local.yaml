@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+#  app:
+#    build:
+#      context: .
+#    ports:
+#      - "8888:3000"
+#    env_file:
+#      - ./environments/local.env
+#    volumes:
+#      - /app
+#      - /app/node_modules
+#    restart: on-failure
+#    command: >
+#      sh -c "npm run start:local"
+#
+
+  auto-ria-project-postgres:
+    image: postgres:16.1
+    ports:
+      - '${POSTGRES_PORT:-5433}:5432'
+    environment:
+      POSTGRES_USER: '${POSTGRES_USER:-user}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-password}'
+      POSTGRES_DB: '${POSTGRES_DB:-auto-ria-project}'
+    volumes:
+      - ./auto-ria-project-api-db:/var/lib/postgresql/march-2024
+
+  auto-ria-project-redis:
+    image: redis:7.2.3
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    command: >
+      --requirepass '${REDIS_PASSWORD:-redispass}'
+    restart: unless-stopped
+
+  auto-ria-project-s3:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    ports:
+      - "8000:9000"
+      - "8001:9001"
+    volumes:
+      - ./auto-ria-project-api-s3-data:/usr/src/app/s3
+    environment:
+      - MINIO_ROOT_USER=user
+      - MINIO_ROOT_PASSWORD=password
+
+volumes:
+  auto-ria-project-api-db:
+  auto-ria-project-api-s3:
