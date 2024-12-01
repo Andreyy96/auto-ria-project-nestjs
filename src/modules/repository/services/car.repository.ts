@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 
 import { CarEntity } from '../../../database/entities/car.entity';
-import { SoldCarEntity } from '../../../database/entities/sold-car.entity';
 import { CarListReqDto } from '../../car/models/dto/req/car-list.req.dto';
 
 @Injectable()
@@ -49,8 +48,13 @@ export class CarRepository extends Repository<CarEntity> {
     return await qb.getManyAndCount();
   }
 
-  public async findCarById(carId: string): Promise<CarEntity> {
-    const qb = this.createQueryBuilder('car');
+  public async findCarById(
+    carId: string,
+    em?: EntityManager,
+  ): Promise<CarEntity> {
+    const repo = em ? em.getRepository(CarEntity) : this;
+
+    const qb = repo.createQueryBuilder('car');
     qb.leftJoinAndSelect('car.user', 'user');
 
     qb.andWhere('car.id = :carId');

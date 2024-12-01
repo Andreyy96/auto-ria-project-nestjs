@@ -4,8 +4,8 @@ import { Config } from './config.type';
 
 export default (): Config => ({
   app: {
-    port: parseInt(process.env.APP_PORT, 10) || 3000,
-    host: process.env.APP_HOST,
+    port: parseInt(process.env.PORT, 10) || 3000,
+    host: process.env.HOST,
   },
   database: {
     host: process.env.POSTGRES_HOST,

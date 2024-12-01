@@ -5,13 +5,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectEntityManager } from '@nestjs/typeorm';
 import LocalStorage from 'node-localstorage';
-import { PRIVATE_BANK_URL } from 'src/common/constants/private-bank-info.constant';
+import { EntityManager } from 'typeorm';
 
+import { PRIVATE_BANK_URL } from '../../../common/constants/private-bank-info.constant';
 import { UserRoleEnum } from '../../../common/enums/user-role.enum';
 import { CarID, UserID } from '../../../common/types/entity-ids.type';
 import { CarEntity } from '../../../database/entities/car.entity';
-import { SoldCarEntity } from '../../../database/entities/sold-car.entity';
+import { ViewEntity } from '../../../database/entities/view.entity';
 import { IUserData } from '../../auth/models/interfaces/user-data.interface';
 import { EmailService } from '../../email/email.service';
 import { EmailTypeEnum } from '../../email/enums/email-type.enum';
@@ -46,6 +48,8 @@ export class CarService {
     private readonly viewRepository: ViewRepository,
     private readonly emailService: EmailService,
     private readonly managerRepository: ManagerRepository,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
   ) {}
 
   public async getList(query: CarListReqDto): Promise<CarListResDto> {
@@ -112,22 +116,25 @@ export class CarService {
   }
 
   public async getById(carId: string): Promise<CarResDto> {
-    const car = await this.carRepository.findCarById(carId);
+    return await this.entityManager.transaction('SERIALIZABLE', async (em) => {
+      const viewRepository = em.getRepository(ViewEntity);
+      const car = await this.carRepository.findCarById(carId, em);
 
-    if (!car) {
-      throw new NotFoundException('Car not found');
-    }
-    const view = +car.view + 1;
+      if (!car) {
+        throw new NotFoundException('Car not found');
+      }
+      const view = +car.view + 1;
 
-    await this.carRepository.update(car.id, { view: view.toString() });
+      await this.carRepository.update(car.id, { view: view.toString() });
 
-    await this.viewRepository.save(
-      this.viewRepository.create({
-        car_id: car.id,
-      }),
-    );
+      await viewRepository.save(
+        viewRepository.create({
+          car_id: car.id,
+        }),
+      );
 
-    return CarMapper.toResponseDTO(car);
+      return CarMapper.toResponseDTO(car);
+    });
   }
 
   public async deleteById(userData: IUserData, carId: CarID): Promise<void> {

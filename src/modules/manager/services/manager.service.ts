@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 
 import {
-  BrandID,
+  CarID,
   ManagerID,
   UserID,
 } from '../../../common/types/entity-ids.type';
@@ -71,6 +71,24 @@ export class ManagerService {
     userId: UserID,
   ): Promise<void> {
     await this.highActionService.unbannedUser(userData, userId);
+  }
+
+  public async deleteCarById(userData: IUserData, carId: CarID): Promise<void> {
+    await this.highActionService.deleteCarById(userData, carId);
+  }
+
+  public async activateCarById(
+    userData: IUserData,
+    carId: CarID,
+  ): Promise<void> {
+    await this.highActionService.activateCarById(userData, carId);
+  }
+
+  public async disableCarById(
+    userData: IUserData,
+    carId: CarID,
+  ): Promise<void> {
+    await this.highActionService.disableCarById(userData, carId);
   }
 
   public async isEmailUniqueOrThrow(email: string): Promise<void> {

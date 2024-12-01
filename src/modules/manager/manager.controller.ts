@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -14,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { ApiFile } from '../../common/decorators/api-file.decorator';
-import { UserID } from '../../common/types/entity-ids.type';
+import { CarID, UserID } from '../../common/types/entity-ids.type';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IUserData } from '../auth/models/interfaces/user-data.interface';
 import { BrandReqDto } from './dto/req/brand.req.dto';
@@ -25,6 +27,15 @@ import { ManagerService } from './services/manager.service';
 @Controller('managers')
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
+
+  @ApiBearerAuth()
+  @Post('brand')
+  public async putBrandInList(
+    @CurrentUser() userData: IUserData,
+    @Body() dto: BrandReqDto,
+  ): Promise<void> {
+    await this.managerService.putBrandInList(userData, dto.brand);
+  }
 
   @ApiBearerAuth()
   @Get('me')
@@ -71,11 +82,32 @@ export class ManagerController {
   }
 
   @ApiBearerAuth()
-  @Post('brand')
-  public async putBrandInList(
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':carId')
+  public async deleteById(
     @CurrentUser() userData: IUserData,
-    @Body() dto: BrandReqDto,
+    @Param('carId', ParseUUIDPipe) carId: CarID,
   ): Promise<void> {
-    await this.managerService.putBrandInList(userData, dto.brand);
+    await this.managerService.deleteCarById(userData, carId);
+  }
+
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(':carId/activate')
+  public async activateCarById(
+    @CurrentUser() userData: IUserData,
+    @Param('carId', ParseUUIDPipe) carId: CarID,
+  ): Promise<void> {
+    await this.managerService.activateCarById(userData, carId);
+  }
+
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':carId/disable')
+  public async disableCraById(
+    @CurrentUser() userData: IUserData,
+    @Param('carId', ParseUUIDPipe) carId: CarID,
+  ): Promise<void> {
+    await this.managerService.disableCarById(userData, carId);
   }
 }

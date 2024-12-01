@@ -1,10 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 
-import {
-  AdminID,
-  BrandID,
-  UserID,
-} from '../../../common/types/entity-ids.type';
+import { AdminID, CarID, UserID } from '../../../common/types/entity-ids.type';
 import { IUserData } from '../../auth/models/interfaces/user-data.interface';
 import { ContentType } from '../../file-storage/models/enums/content-type.enum';
 import { FileStorageService } from '../../file-storage/services/file.storage.service';
@@ -72,6 +68,24 @@ export class AdminService {
     userId: UserID,
   ): Promise<void> {
     await this.highActionService.unbannedUser(userData, userId);
+  }
+
+  public async deleteCarById(userData: IUserData, carId: CarID): Promise<void> {
+    await this.highActionService.deleteCarById(userData, carId);
+  }
+
+  public async activateCarById(
+    userData: IUserData,
+    carId: CarID,
+  ): Promise<void> {
+    await this.highActionService.activateCarById(userData, carId);
+  }
+
+  public async disableCarById(
+    userData: IUserData,
+    carId: CarID,
+  ): Promise<void> {
+    await this.highActionService.disableCarById(userData, carId);
   }
 
   public async isEmailUniqueOrThrow(email: string): Promise<void> {

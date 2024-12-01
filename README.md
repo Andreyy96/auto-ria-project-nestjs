@@ -24,50 +24,82 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### User
+
+User can do the following:
+
+- get me;
+- update (name, phone);
+- remove his account;
+- upload avatar and delete avatar;
+- create car, if you have a premium account you can create an unlimited number of cars;
+- remove and sell car !!!only your cars;
+- upload and delete car image !!!only your cars;
+- get statistic (count views by week, month and year, average price of the model by country and region);
+- send email manager about add brand to list;
+
+
+### Admin
+
+Admin can do the following:
+
+- get me;
+- remove his account;
+- upload avatar and delete avatar;
+- sign-up manager;
+- banned and unbanned user;
+- add brand to list;
+- activate and disable car by id;
+- remove car by id;
+
+### Manager
+
+Manager can do the following:
+
+- get me;
+- remove his account;
+- upload avatar and delete avatar;
+- banned and unbanned user;
+- add brand to list;
+- get list no active car;
+- activate and disable car by id;
+- remove car by id;
+
+### Car
+
+- when creating a car, the price in foreign currency (EUR, USD) is converted into hryvnia and returned with the exchange rate;
+- if you fail to create an ad 3 times, it will go into inactive status;
+
+### Cron 
+
+Announcements created in foreign currency are updated at the private bank rate every day at 4 am
+
+
 
 ## Installation
 
 ```bash
+#install all dependencies and dev dependencies in package.json
 $ npm install
 ```
+
+## Env File
+
+- create local.env in environments folder,
+- copy and fill environment variables from example.local.env
 
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+# docker
+$ npm run start:docker:local
 
 # watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ npm run start:local
 ```
-
 ## Test
-
 ```bash
 # unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ npm run test:unit
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
