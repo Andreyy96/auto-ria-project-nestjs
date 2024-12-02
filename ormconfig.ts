@@ -11,7 +11,7 @@ const config = configuration().database;
 
 export default new DataSource({
   type: 'postgres',
-  host: config.host,
+  host: 'auto-ria-project-postgres',
   port: config.port,
   username: config.user,
   password: config.password,

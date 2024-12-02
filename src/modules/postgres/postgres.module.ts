@@ -14,7 +14,7 @@ import { Config, DatabaseConfig } from '../../configs/config.type';
         const config = configService.get<DatabaseConfig>('database');
         return {
           type: 'postgres',
-          host: config.host,
+          host: 'auto-ria-project-postgres',
           port: config.port,
           username: config.user,
           password: config.password,

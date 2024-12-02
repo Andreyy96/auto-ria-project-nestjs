@@ -1,26 +1,26 @@
 version: '3.8'
 
 services:
-#  app:
-#    build:
-#      context: .
-#
-#    ports:
-#      - "3000:3000"
-#    env_file:
-#      - ./environments/local.env
-#    volumes:
-#      - ./src:/app/src
-#      - /app/node_modules
-#    restart: on-failure
-#    command: >
-#      sh -c "npm run start:local"
+  app:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auto-ria-project-postgres
+    env_file:
+      - ./environments/local.env
+    volumes:
+      - ./src:/app/src
+    restart: on-failure
+    command: >
+      sh -c "npm run start:local"
 
 
   auto-ria-project-postgres:
     image: postgres:16.1
     ports:
-      - '${POSTGRES_PORT:-5433}:5432'
+      - '${POSTGRES_PORT:-5432}:5432'
     environment:
       POSTGRES_USER: '${POSTGRES_USER:-user}'
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-password}'
