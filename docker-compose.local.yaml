@@ -8,6 +8,7 @@ services:
       - "3000:3000"
     depends_on:
       - auto-ria-project-postgres
+      - auto-ria-project-s3
     env_file:
       - ./environments/local.env
     volumes:
@@ -42,14 +43,14 @@ services:
     command: server /data --console-address ":9001"
     restart: unless-stopped
     ports:
-      - "8000:9000"
-      - "8001:9001"
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - ./auto-ria-project-api-s3-data:/usr/src/app/s3
     environment:
       - MINIO_ROOT_USER=user
       - MINIO_ROOT_PASSWORD=password
-
+-
 volumes:
   auto-ria-project-api-db:
   auto-ria-project-api-s3:
